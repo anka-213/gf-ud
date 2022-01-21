@@ -237,8 +237,8 @@ addBackups0 :: DevTree -> DevTree
 addBackups0 tr@(RTree dn trs) = case map collectBackup (tr:trs) of  -- backups from the tree itself and every subtree
   btrs -> RTree
     (dn {devAbsTrees = [
-           replaceInfo [(t,ai) | (_,(t,Just ai)) <- btrs]   -- 
-           (theAbsTreeInfo tr)]                             -- the only abstree that there is 
+           replaceInfo [(t,ai) | (_,(t,Just ai)) <- btrs]   --
+           (theAbsTreeInfo tr)]                             -- the only abstree that there is
         }
     )
     (map fst (tail btrs))
@@ -358,7 +358,7 @@ combineTrees env =
     where
       -- The head only contains new trees that were created in the previous iteration
       onlyNewTree = tr {root = nd { devAbsTrees = map funInfoToAbsTreeInfo fis}}
-      -- Add the new trees to the old ones. There shouldn't really be any duplicates now, so there's 
+      -- Add the new trees to the old ones. There shouldn't really be any duplicates now, so there's
       -- a bit of redundant checking going on here.
       nextTr = combineUnduplicated fis tr
 
@@ -466,11 +466,15 @@ analyseWords env = mapRTree lemma2fun
   --- it is still possible that some other category is meant
   getWordTrees wf w cs = case concatMap (parseWord w) cs `ifEmpty` concatMap (parseWord (map toLower w)) cs `ifEmpty` morphoFallback wf of
     [] -> case cs of
-      [] -> (True,[(newWordTree w unknownCat, unknownCat)])
-      _  -> (True,[(newWordTree w ec, ec) | c <- cs, let ec = either id id c, strFunExists ec] 
+      [] -> (True,[(newWordTree wfLiteral unknownCat, unknownCat)])
+      _  -> (True,[(newWordTree wfLiteral ec, ec) | c <- cs, let ec = either id id c, strFunExists ec]
                    `ifEmpty` [(newWordTree w ec, ec) | c <- cs, let ec = either id id c])
-
     fs -> (False,fs)
+    where
+      isAllCaps = all isUpper
+      isSame str1 str2 = map toLower str1 == map toLower str2
+      wfLiteral = if isAllCaps wf && (isSame w wf) then wf else w
+
 
   -- | Return the first non-empty list
   ifEmpty [] xs = xs
@@ -504,7 +508,7 @@ analyseWords env = mapRTree lemma2fun
     , ([], c, []) <- pure $ unType tp
     ]
 
--- auxiliaries 
+-- auxiliaries
 -- newWordTree w c = RTree (mkCId (w ++ "_" ++ showCId c)) [] ---
 newWordTree w c = RTree (mkCId ("Str" ++ showCId c)) [RTree (mkCId (stringLiteralPrefix ++ w)) []] ---
 isNewWordFun f = isInfixOf "__x__" (showCId f)

@@ -24,10 +24,10 @@ main = do
         -- It might also be worthwhile to prioritize smaller trees of different categories,
         -- instead of the current behaviour of preferring categories that are earlier in alphabetic order.
         bestTrees env someCats `shouldBe`
-          ["ImpVP (UseNP (DetCN anySg_Det (UseN cat_N)))"
-          ,"ImpVP (UseNP (DetCN anyPl_Det (UseN cat_N)))"
-          ,"ImpVP (UseNP (DetCN someSg_Det (UseN cat_N)))"
-          ,"ImpVP (UseNP (DetCN somePl_Det (UseN cat_N)))"]
+          ["DetCN anySg_Det (UseN cat_N)"
+          ,"DetCN anyPl_Det (UseN cat_N)"
+          ,"DetCN someSg_Det (UseN cat_N)"
+          ,"DetCN somePl_Det (UseN cat_N)"]
 
 
 bestTrees :: UDEnv -> String -> [String]

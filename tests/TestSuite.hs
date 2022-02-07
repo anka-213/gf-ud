@@ -14,6 +14,7 @@ main :: IO ()
 main = do
   env <- myUDEnv
   someCats <- readFile "tests/grammars/some_cats.conllu"
+  tenHovercrafts <- readFile "tests/grammars/test_distance.conllu"
   hspec $ do
     describe "Prefer flat trees" $ do
       it "should pick the flatter tree of the two alternatives" $ do
@@ -28,6 +29,12 @@ main = do
           ,"DetCN anyPl_Det (UseN cat_N)"
           ,"DetCN someSg_Det (UseN cat_N)"
           ,"DetCN somePl_Det (UseN cat_N)"]
+    describe "Match on DISTANCE" $ do
+      it "should handle 'DISTANCE' as keyword, CG-style" $ do
+        bestTrees env tenHovercrafts `shouldBe`
+          ["ApposNum (UseN hovercraft_N) ten_Num"
+          ,"DetCN (num2Det ten_Num) (UseN hovercraft_N)"]
+
 
 
 bestTrees :: UDEnv -> String -> [String]

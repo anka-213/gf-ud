@@ -20,4 +20,14 @@ abstract Test = MiniLang - [PredVP] ** {
 
     fun ApposNum : CN -> Num -> CN ; -- Section 10
 
+    -- To test the order of applications based on word order
+    -- we need some postmodifier APs
+    fun PastPartAgentAP : V2 -> NP -> AP ; -- separated by walls
+    fun separate_V2 : V2 ;
+    fun wall_N : N ;
+    fun portion_N : N ;
+    fun building_N : N ;
+    fun large_A : A ;
+
+
 }

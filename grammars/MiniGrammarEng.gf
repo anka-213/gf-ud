@@ -150,7 +150,11 @@ concrete MiniGrammarEng of MiniGrammar = open MiniResEng, Prelude in {
     UseN n = n ;
 
     AdjCN ap cn = {
-      s = table {n => ap.s ++ cn.s ! n}
+      s = table {n => 
+            case ap.isPre of {
+              True => ap.s ++ cn.s ! n ;
+              False => cn.s ! n ++ ap.s}
+          }
       } ;
 
     PositA a = a ;

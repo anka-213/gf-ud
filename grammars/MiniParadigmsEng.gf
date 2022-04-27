@@ -1,7 +1,8 @@
 resource MiniParadigmsEng = open
 
   MiniGrammarEng,
-  MiniResEng
+  MiniResEng,
+  Prelude
   
 in {
 
@@ -17,7 +18,7 @@ oper
     = \s -> lin PN {s = s} ;
 
   mkA : Str -> A
-    = \s -> lin A {s = s} ;
+    = \s -> lin A {s = s ; isPre=True} ;
 
   mkV = overload {
     mkV : (inf : Str) -> V  -- predictable verb, e.g. play-plays, cry-cries, wash-washes

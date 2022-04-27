@@ -27,7 +27,7 @@ oper
     _                         => regNoun sg
     } ;
 
-  Adjective : Type = {s : Str} ;
+  Adjective : Type = {s : Str ; isPre : Bool} ;
 
   Verb : Type = {s : VForm => Str} ;
 

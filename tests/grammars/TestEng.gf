@@ -19,7 +19,7 @@ concrete TestEng of Test = MiniLangEng - [PredVP] ** open (R=MiniResEng), MiniPa
     lin ten_Num = {s = "10" ; n = R.Pl} ;
     lin num2Det n = n ;
     lin ApposNum cn num = cn ** {s = \\n => cn.s ! n ++ num.s} ;
-    
+
     -- To test the order of applications based on word order
     -- we need some postmodifier APs
     -- : V2 -> NP -> AP ; -- separated by walls
@@ -28,6 +28,7 @@ concrete TestEng of Test = MiniLangEng - [PredVP] ** open (R=MiniResEng), MiniPa
       isPre = False
     } ;
 
+    lin AdvCN cn adv = cn ** {s = \\nf => cn.s ! nf ++ adv.s} ;
     -- lexicon
     lin separate_V2 = mkV2 "separate" ;
     lin wall_N = mkN "wall" ;

@@ -11,6 +11,7 @@
 #fun UseQCl	aux advmod head
 #fun UttImpSg      aux head
 #fun num2Det head
+#fun PastPartAgentAP head obl
 #fun ApposNum head nummod
 #fun root_nsubj head nsubj
 #fun root_nsubj_obl head nsubj advmod

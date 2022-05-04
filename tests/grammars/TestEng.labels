@@ -52,6 +52,7 @@
 #auxfun UseCl_NegAnt have neg cl : Have -> Neg -> Cl -> S = UseCl TAnt PNeg cl ; aux advmod head
 #auxfun UseCl_NegCop neg cl : Neg -> Cl -> S = UseCl TSim PNeg cl ; advmod head
 
+#auxfun AdjCN_acl ap cn : AP -> CN -> CN = AdjCN ap cn ; acl head
 
 #auxcat Cop AUX
 #auxcat Do AUX

@@ -1,0 +1,9 @@
+# newdoc
+# newpar
+# sent_id = 1
+# text = large portion of walls
+1	large	large	ADJ	JJ	Degree=Pos	2	amod	_	_
+2	portion	portion	NOUN	NN	Number=Sing	0	root	_	_
+3	of	of	ADP	IN	_	4	case	_	_
+4	walls	wall	NOUN	NNS	Number=Plur	2	nmod	_	SpacesAfter=\n
+

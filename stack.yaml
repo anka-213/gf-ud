@@ -14,7 +14,8 @@ extra-deps:
   # commit: 97cfec29067de07a166d7b786cad60419b617a59 # Using string interning
   # commit: 43202b31419f68bffb50320227cf01dadfa080e8 # Using ekmett's string interning
   # commit: d8444440443b8113e8b98cc81f12b8b0bb910bf6 # With delayed TrieMap.map
-  commit: d902bb6c00c56230e74897d8d14e9e0c3a81178e   # More cost centres
+  # commit: d902bb6c00c56230e74897d8d14e9e0c3a81178e   # More cost centres
+  commit: 3a960a4bfb50d426169749bc304830b647a2fac6   # Using ShortByteString again
   # Use ShortByteString
   # branch: random-performance-improvements
 - json-0.10@sha256:d9fc6b07ce92b8894825a17d2cf14799856767eb30c8bf55962baa579207d799,3210

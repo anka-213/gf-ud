@@ -6,7 +6,7 @@ resolver: lts-18.28
 
 extra-deps:
 - git: https://github.com/GrammaticalFramework/gf-core
-  commit: 810640822dc3047af8fd9d7988e3f2423595c7b2
+  commit: 6414bc8923ddf24c65eed053d03244c054c86dcb
 - json-0.10@sha256:d9fc6b07ce92b8894825a17d2cf14799856767eb30c8bf55962baa579207d799,3210
 - alex-3.2.5@sha256:af0c4aac67849d8b35e8c16063517642a5c6b809d09fdb040ed9369f91cb26fb,4054
 - exceptions-0.10.4@sha256:1729ef26a611ae78aa58cdd34192aff710cbaa6d631dd042ddfb63556d00b52c,2796

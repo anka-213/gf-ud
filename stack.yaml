@@ -39,6 +39,8 @@ extra-deps:
 flags:
   gf:
     server: false
+  QuickCheck:
+    old-random: true
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

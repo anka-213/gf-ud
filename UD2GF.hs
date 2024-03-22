@@ -45,7 +45,7 @@ getExprs opts env string = map getExpr sentences
         udtree = udSentence2tree sentence
         devtree0 = udtree2devtree udtree
         devtree1 = analyseWords env devtree0
-        devtree = combineTrees env devtree1
+        devtree = combineTrees opts env devtree1
         besttree0 = head (splitDevTree devtree)
         besttree = addBackups besttree0
         ts0 = devtree2abstrees besttree
@@ -78,7 +78,7 @@ showUD2GF opts env sentence = do
   let devtree1 = analyseWords env devtree0
   ifOpt opts "dt1" $ prLinesRTree (prDevNode 2) devtree1
 
-  let devtree = combineTrees env devtree1
+  let devtree = combineTrees opts env devtree1
   ifOpt opts "dt" $ prLinesRTree (prDevNode 4) devtree
 
   let besttree0 = head (splitDevTree devtree)
@@ -332,8 +332,8 @@ data ArgInfo = ArgInfo {
   }
   deriving Show
 
-combineTrees :: UDEnv -> DevTree -> DevTree
-combineTrees env =
+combineTrees :: [(String, String)] -> UDEnv -> DevTree -> DevTree
+combineTrees opts env =
      rankDevTree
    . comb
 
@@ -343,10 +343,12 @@ combineTrees env =
   comb tr@(RTree dn dts) = case map comb dts of
     ts -> traceNoPrint (prDevNode 3 . root) "built" $ pruneDevTree $ rankDevTree $ keepTryingVersion (RTree dn ts)
 
-  keepTryingVersion = keepTryingNew
+  keepTryingVersion = if isOpt opts "fastKeepTrying" then keepTryingNew else keepTrying
   -- keepTryingVersion = keepTrying
+  fastTrees = isOpt opts "fastAllFunsLocal"
+  allFunsLocalVersion = if fastTrees then allFunsLocalFast else allFunsLocal
   -- allFunsLocalVersion = allFunsLocal ; fastTrees = False
-  allFunsLocalVersion = allFunsLocalFast ; fastTrees = True
+  -- allFunsLocalVersion = allFunsLocalFast ; fastTrees = True
 
   -- Apply all possible functions and iterate doing the same on the new trees until there's no new trees
   keepTryingNew :: DevTree -> DevTree

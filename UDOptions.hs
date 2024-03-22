@@ -27,6 +27,8 @@ isOpt opts o = elem o (map fst opts)
 noOpts = []
 
 fullOpts = [
+  ("fastKeepTrying","Use the fast version of keepTrying"),
+  ("fastAllFunsLocal","Use the fast version of allFunsLocal"),
   ("msg","show message and not just the result"),
   ("ud", "UD tree in CoNLLU format"),
   ("err","validation errors in the UD tree"),
@@ -51,7 +53,7 @@ fullOpts = [
   ("lin", "linearize tree using the active language of the environment"),
   ("units", "(eval) print evaluation per sentence, from lowest score upwards"),
   ("stat", "show statistics of original and interpreted words"),
-  ("adjust", "(pattern-match) adjust results to a valid UD trees with root"), 
+  ("adjust", "(pattern-match) adjust results to a valid UD trees with root"),
   ("prune", "(pattern-match) show only the roots of matching subtrees"),
   ("FORM", "(statistics) surface forms"),
   ("LEMMA", "(statistics) lemmas"),

@@ -18,13 +18,26 @@ myUDEnv :: IO UDEnv
 myUDEnv = getEnv (path "ShallowParse") "Eng" "Text"
   where path x = "grammars/" ++ x
 
+removeVowels :: String -> String
+removeVowels = unwords .  map (onTail $ filter (`notElem` "aiueo")) . words
+  where
+    onTail f [] = []
+    onTail f (x:xs) = x : f xs
+
+shortenSentence :: Int -> String -> String
+shortenSentence n str
+  | length str < n = str
+  | otherwise = take n $ removeVowels str
+
 -- Our benchmark harness.
 main = do
     env <- myUDEnv
     fullFile <- readFile "upto12eng.conllu"
     let sentences = stanzas $ lines fullFile -- the input string has many sentences
-    let labeledSentences = [( unwords $ map udFORM $ udWordLines $ prss str, unlines str) | str <- sentences]
-    let benchWithOpts opts = [ bench (show nr) $ nf (bestTrees opts env) sentence | (nr, sentence) <- take 10 labeledSentences]
+    let labeledSentences = [(nr, unwords $ map udFORM $ udWordLines $ prss str, unlines str) | (nr, str) <- zip [1..] sentences]
+    let benchWithOpts opts =
+            [ bench (show nr ++ ": " ++ shortenSentence 30 name) $ nf (bestTrees opts env) sentence
+            | (nr, name, sentence) <- take 10 labeledSentences]
     defaultMain
         [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
         , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]

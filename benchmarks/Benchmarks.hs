@@ -5,6 +5,7 @@ import UDAnnotations
 import UDConcepts
 import PGF (showExpr)
 import Criterion.Main
+import Debug.Trace (traceM)
 
 -- The function we're benchmarking.
 fib m | m < 0     = error "negative!"
@@ -34,15 +35,18 @@ main = do
     env <- myUDEnv
     fullFile <- readFile "upto12eng.conllu"
     let sentences = stanzas $ lines fullFile -- the input string has many sentences
+    traceM $ "Sentences: " ++ show (length sentences)
     let labeledSentences = [(nr, unwords $ map udFORM $ udWordLines $ prss str, unlines str) | (nr, str) <- zip [1..] sentences]
+    let indicesByTime = [7, 0, 8, 2, 4, 6, 1, 3, 9, 5] -- The indices of the first ten sentences, sorted by time
+    let reorderedSentences = map (labeledSentences !!) indicesByTime
     let benchWithOpts opts =
             [ bench (show nr ++ ": " ++ shortenSentence 30 name) $ nf (bestTrees opts env) sentence
-            | (nr, name, sentence) <- take 10 labeledSentences]
+            | (nr, name, sentence) <- take 10 reorderedSentences]
     defaultMain
         [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
         , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]
         , bgroup "fast-keepTrying" $ benchWithOpts [("fastKeepTrying","")]
-        -- , bgroup "slow-both" $ benchWithOpts []
+        , bgroup "slow-both" $ benchWithOpts []
         -- bgroup "fib" [ bench "1"  $ nf (bestTrees [] env) (sentences !! 0)
         --              , bench "2"  $ nf (bestTrees [] env) (sentences !! 1)
         --              , bench "3"  $ nf (bestTrees [] env) (sentences !! 2)

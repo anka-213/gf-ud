@@ -22,13 +22,14 @@ myUDEnv = getEnv (path "ShallowParse") "Eng" "Text"
 main = do
     env <- myUDEnv
     fullFile <- readFile "upto12eng.conllu"
-    let sentences = map unlines $ stanzas $ lines fullFile -- the input string has many sentences
-    let benchWithOpts opts = [ bench (show nr) $ nf (bestTrees opts env) sentence | (nr, sentence) <- zip [1..10] sentences]
+    let sentences = stanzas $ lines fullFile -- the input string has many sentences
+    let labeledSentences = [( unwords $ map udFORM $ udWordLines $ prss str, unlines str) | str <- sentences]
+    let benchWithOpts opts = [ bench (show nr) $ nf (bestTrees opts env) sentence | (nr, sentence) <- take 10 labeledSentences]
     defaultMain
-        [ bgroup "fast both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
-        , bgroup "fast keepTrying" $ benchWithOpts [("fastKeepTrying","")]
-        , bgroup "fast allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]
-        , bgroup "slow both" $ benchWithOpts []
+        [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
+        , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]
+        , bgroup "fast-keepTrying" $ benchWithOpts [("fastKeepTrying","")]
+        -- , bgroup "slow-both" $ benchWithOpts []
         -- bgroup "fib" [ bench "1"  $ nf (bestTrees [] env) (sentences !! 0)
         --              , bench "2"  $ nf (bestTrees [] env) (sentences !! 1)
         --              , bench "3"  $ nf (bestTrees [] env) (sentences !! 2)

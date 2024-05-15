@@ -26,9 +26,10 @@ removeVowels = unwords .  map (onTail $ filter (`notElem` "aiueo")) . words
     onTail f (x:xs) = x : f xs
 
 shortenSentence :: Int -> String -> String
-shortenSentence n str
-  | length str < n = str
-  | otherwise = take n $ removeVowels str
+shortenSentence n str = str
+-- shortenSentence n str
+--   | length str < n = str
+--   | otherwise = take n $ removeVowels str
 
 -- Our benchmark harness.
 main = do

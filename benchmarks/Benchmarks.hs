@@ -40,21 +40,29 @@ main = do
     let labeledSentences = [(nr, unwords $ map udFORM $ udWordLines $ prss str, unlines str) | (nr, str) <- zip [1..] sentences]
     let indicesByTime = [7, 0, 8, 2, 4, 6, 1, 3, 9, 5] -- The indices of the first ten sentences, sorted by time
     let reorderedSentences = map (labeledSentences !!) indicesByTime
-    let benchWithOpts opts =
-            [ bench (show nr ++ ": " ++ shortenSentence 30 name) $ nf (bestTrees opts env) sentence
-            | (nr, name, sentence) <- take 10 reorderedSentences]
+    let variations =
+            [ ("fast-both", [("fastKeepTrying",""),("fastAllFunsLocal","")])
+            , ("fast-allFunsLocal", [("fastAllFunsLocal","")])
+            , ("fast-keepTrying", [("fastKeepTrying","")])
+            , ("slow-both", [])
+            ]
+    let benchWithOpts sentence (description, opts) =
+            bench description $ nf (bestTrees opts env) sentence
     defaultMain
-        [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
-        , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]
-        , bgroup "fast-keepTrying" $ benchWithOpts [("fastKeepTrying","")]
-        , bgroup "slow-both" $ benchWithOpts []
-        -- bgroup "fib" [ bench "1"  $ nf (bestTrees [] env) (sentences !! 0)
-        --              , bench "2"  $ nf (bestTrees [] env) (sentences !! 1)
-        --              , bench "3"  $ nf (bestTrees [] env) (sentences !! 2)
-        --             --  , bench "9"  $ whnf fib 9
-        --             --  , bench "11" $ whnf fib 11
-        --              ]
+        [ bgroup (show nr ++ ": " ++ shortenSentence 30 name) $ map (benchWithOpts sentence) variations
+        | (nr, name, sentence) <- take 10 reorderedSentences
         ]
+        -- [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
+        -- , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]
+        -- , bgroup "fast-keepTrying" $ benchWithOpts [("fastKeepTrying","")]
+        -- , bgroup "slow-both" $ benchWithOpts []
+        -- -- bgroup "fib" [ bench "1"  $ nf (bestTrees [] env) (sentences !! 0)
+        -- --              , bench "2"  $ nf (bestTrees [] env) (sentences !! 1)
+        -- --              , bench "3"  $ nf (bestTrees [] env) (sentences !! 2)
+        -- --             --  , bench "9"  $ whnf fib 9
+        -- --             --  , bench "11" $ whnf fib 11
+        -- --              ]
+        -- ]
 
 bestTrees :: [(String,String)] -> UDEnv -> String -> [String]
 bestTrees opts env conll = map exprStr exprs

@@ -38,19 +38,23 @@ main = do
     let sentences = stanzas $ lines fullFile -- the input string has many sentences
     traceM $ "Sentences: " ++ show (length sentences)
     let labeledSentences = [(nr, unwords $ map udFORM $ udWordLines $ prss str, unlines str) | (nr, str) <- zip [1..] sentences]
-    let indicesByTime = [7, 0, 8, 2, 4, 6, 1, 3, 9, 5] -- The indices of the first ten sentences, sorted by time
-    let reorderedSentences = map (labeledSentences !!) indicesByTime
+    -- let indicesByTime = [7, 0, 8, 2, 4, 6, 1, 9, 3, 5] -- The indices of the first ten sentences, sorted by time
+    -- let indicesByTime = [63,25,103] -- The indices of some of the most costly sentences
+    -- let reorderedSentences = map (labeledSentences !!) indicesByTime
+    let reorderedSentences = labeledSentences
     let variations =
-            [ ("fast-both", [("fastKeepTrying",""),("fastAllFunsLocal","")])
+            [
+              ("fast-both", [("fastKeepTrying",""),("fastAllFunsLocal","")])
             , ("fast-allFunsLocal", [("fastAllFunsLocal","")])
             , ("fast-keepTrying", [("fastKeepTrying","")])
-            , ("slow-both", [])
+            -- ,
+            --   ("slow-both", [])
             ]
     let benchWithOpts sentence (description, opts) =
             bench description $ nf (bestTrees opts env) sentence
     defaultMain
         [ bgroup (show nr ++ ": " ++ shortenSentence 30 name) $ map (benchWithOpts sentence) variations
-        | (nr, name, sentence) <- take 10 reorderedSentences
+        | (nr, name, sentence) <- take 600 reorderedSentences
         ]
         -- [ bgroup "fast-both" $ benchWithOpts [("fastKeepTrying",""),("fastAllFunsLocal","")]
         -- , bgroup "fast-allFunsLocal" $ benchWithOpts [("fastAllFunsLocal","")]

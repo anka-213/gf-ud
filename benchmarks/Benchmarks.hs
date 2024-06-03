@@ -47,8 +47,7 @@ main = do
               ("fast-both", [("fastKeepTrying",""),("fastAllFunsLocal","")])
             , ("fast-allFunsLocal", [("fastAllFunsLocal","")])
             , ("fast-keepTrying", [("fastKeepTrying","")])
-            -- ,
-            --   ("slow-both", [])
+            , ("slow-both", [])
             ]
     let benchWithOpts sentence (description, opts) =
             bench description $ nf (bestTrees opts env) sentence

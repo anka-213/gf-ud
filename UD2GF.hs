@@ -480,33 +480,36 @@ Use Yoneda's lemma to make TrieMap.map faster in PGF.parse
 
   allFunsLocal :: DevTree -> [FunInfo]
   allFunsLocal tr@(RTree dn ts) =
+    -- trace ("Looking through " ++ show (length argss) ++ " arg combinations for devtree:\n" ++ prLinesRTree (prDevNode 2) tr)
     [FunInfo f labtyp abstree usage |
 
+        (f,labtyp) <- allF,
+        (abstree,usage) <- tryFindArgs f labtyp argss
+      ]
+    where
         -- for head and each immediate subtree, build the list of its already built abstrees, each with type and label
         -- argalts :: [[Arg]] -- one list for root and for each subtree
-        let argalts = [
+        argalts = [
                        [ArgInfo i us (c, devLabel r) (devFeats r) e | AbsTreeInfo { atiAbsTree = e, atiCat = c, atiUDIds = us} <- devAbsTrees r]
                            |
                              (i,r) <- (0,dn{devLabel = head_Label}) :  -- number the arguments: root node 0, subtrees 1,2,..
                                                  [(i,r) | (i,r) <- zip [1..] (map root ts)]
-                      ],
+                      ]
         -- argument sequences: an argument whose index is already in [Int] may not be used
         -- argseqsAfter :: [Int] -> [[Arg]] -> [[Arg]]
-        let argseqsAfter us argss =
+        argseqsAfter us argss =
 --- too slow!              [filter (\x -> all (flip notElem us) (argUsage x)) xs  | xs <- sequence argss],
-              sequence (filter (not . null) [filter (\x -> all (flip notElem us) (argUsage x)) xs  | xs <- argss]),
+              sequence (filter (not . null) [filter (\x -> all (flip notElem us) (argUsage x)) xs  | xs <- argss])
 
-        let argseqs (arg:args) = [x:xs | x <- arg, xs <- argseqsAfter (argUsage x) args],
+        argseqs (arg:args) = [x:xs | x <- arg, xs <- argseqsAfter (argUsage x) args]
 
-        let allF = allFunsEnv env,
-        let argss = argseqs argalts,
-        (f,labtyp) <- allF,
-        (abstree,usage) <- tryFindArgs f labtyp argss
-      ]
+        allF = allFunsEnv env
+        argss = argseqs argalts
 
   tryFindArgs :: CId -> LabelledType -> [[ArgInfo]] -> [(AbsTree,[UDId])]
   tryFindArgs f labtyp@(valcat,catlabs) argss =
-    [(abstree,usage) |
+    [ -- trace ("applied function " ++ prAbsTree abstree ++ " to args " ++ show (prAbsTree . argTree <$> args))
+      (abstree,usage) |
         args <- argss,
         xis  <- (argTypeMatches catlabs args),
         let abstree = RTree f (map fst xis),
